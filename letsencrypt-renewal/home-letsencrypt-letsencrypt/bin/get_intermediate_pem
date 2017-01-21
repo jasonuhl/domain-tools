@@ -1,0 +1,6 @@
+#!/bin/bash
+set -ex
+
+cd ~/letsencrypt/certs
+
+wget -O - https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem > intermediate.pem

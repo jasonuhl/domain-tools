@@ -1,0 +1,10 @@
+#!/bin/bash
+set -ex
+
+cd ~/letsencrypt/bin
+
+./get_intermediate_pem
+./get_uhlenkott_san_cert
+./get_other_san_certs
+
+echo yay

@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /
+for i in /etc/rc0.d/*courier*; do $i stop; done
+for i in /etc/rc2.d/*courier*; do $i start; done

@@ -1,0 +1,20 @@
+#!/bin/bash
+set -ex
+umask 077
+
+DIR=`mktemp -d /tmp/nginx_certs-XXXXXX`
+cd $DIR
+
+for DOMAIN in uhlenkott.net mccutch.com kendallfortney.com billhound.com; do
+	cp ~letsencrypt/letsencrypt/certs/$DOMAIN-domain.key ~letsencrypt/letsencrypt/certs/$DOMAIN-chained.pem .
+	chown root:root $DOMAIN-domain.key $DOMAIN-chained.pem
+	chmod 0600 $DOMAIN-domain.key
+	chmod 0644 $DOMAIN-chained.pem
+	rsync -av $DOMAIN-domain.key $DOMAIN-chained.pem /etc/nginx/certs
+	rm $DOMAIN-domain.key $DOMAIN-chained.pem
+done
+
+cd /root
+rmdir $DIR
+
+killall -HUP nginx

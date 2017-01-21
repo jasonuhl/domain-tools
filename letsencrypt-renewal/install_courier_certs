@@ -1,0 +1,20 @@
+#!/bin/bash
+set -ex
+umask 077
+
+pgrep courieresmtp || exit 1
+
+DIR=`mktemp -d /tmp/courier_certs-XXXXXX`
+cd $DIR
+cp ~letsencrypt/letsencrypt/certs/esmtpd.pem ~letsencrypt/letsencrypt/certs/imapd.pem .
+chmod 0600 esmtpd.pem imapd.pem
+chown daemon:daemon esmtpd.pem imapd.pem
+
+rsync -av esmtpd.pem imapd.pem /etc/courier
+
+bounce_courier
+
+rm esmtpd.pem imapd.pem
+cd /root
+rmdir $DIR
+

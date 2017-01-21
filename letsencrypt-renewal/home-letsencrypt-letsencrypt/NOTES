@@ -1,0 +1,3 @@
+*-chained.pem is the concatenation of *-signed.crt and intermediate.pem.
+
+The courier esmtpd.pem and imapd.pem files also contain *-domain.key.

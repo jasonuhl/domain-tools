@@ -1,0 +1,8 @@
+#!/bin/bash
+set -ex
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+su - letsencrypt -c ~letsencrypt/letsencrypt/bin/get_all_certs
+install_nginx_certs
+install_courier_certs

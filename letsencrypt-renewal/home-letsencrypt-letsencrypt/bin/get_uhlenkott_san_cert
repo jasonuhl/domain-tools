@@ -1,0 +1,16 @@
+#!/bin/bash
+set -ex
+
+cd ~/letsencrypt/certs
+
+DOMAIN=uhlenkott.net
+
+openssl req -new -sha256 -key $DOMAIN-domain.key -subj "/" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName=DNS:uhlenkott.net,DNS:www.uhlenkott.net,DNS:ferrum.uhlenkott.net,DNS:mail.uhlenkott.net,DNS:uhlenkott.com,DNS:www.uhlenkott.com,DNS:jasonuhl.com,DNS:www.jasonuhl.com,DNS:jasonuhl.net,DNS:www.jasonuhl.net,DNS:jasonuhl.org,DNS:www.jasonuhl.org,DNS:uhlenkott.us,DNS:www.uhlenkott.us")) > $DOMAIN-domain.csr
+
+python ~/letsencrypt/acme-tiny/acme_tiny.py --account-key ./account.key --csr $DOMAIN-domain.csr --acme-dir /var/www/$DOMAIN/.well-known/acme-challenge/ > $DOMAIN-signed.crt
+
+cat $DOMAIN-signed.crt intermediate.pem > $DOMAIN-chained.pem
+
+umask 077
+cat uhlenkott.net-chained.pem uhlenkott.net-domain.key > esmtpd.pem
+cp esmtpd.pem imapd.pem

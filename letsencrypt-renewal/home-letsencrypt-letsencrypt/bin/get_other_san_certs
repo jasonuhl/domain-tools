@@ -1,0 +1,14 @@
+#!/bin/bash
+set -ex
+
+cd ~/letsencrypt/certs
+
+for DOMAIN in mccutch.com billhound.com kendallfortney.com; do
+
+openssl req -new -sha256 -key $DOMAIN-domain.key -subj "/" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName=DNS:$DOMAIN,DNS:www.$DOMAIN")) > $DOMAIN-domain.csr
+
+python ~/letsencrypt/acme-tiny/acme_tiny.py --account-key ./account.key --csr $DOMAIN-domain.csr --acme-dir /var/www/$DOMAIN/.well-known/acme-challenge/ > $DOMAIN-signed.crt
+
+cat $DOMAIN-signed.crt intermediate.pem > $DOMAIN-chained.pem
+
+done
